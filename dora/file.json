@@ -1,0 +1,28 @@
+{
+	"G:" : {
+		"-type":"directory",
+		"-ext":"",
+		"-size":"555",
+		"content": {
+			"okkkk" : {
+				"-type":"file",
+				"-ext":"",
+				"-size":"555"
+			},
+			"bonbon" : {
+				"-type":"directory",
+				"-ext":"",
+				"-size":"0",
+				"content": {
+					"4534" : {
+						"-type":"directory",
+						"-ext":"",
+						"-size":"0",
+						"content": {
+						}
+					}
+				}
+			}
+		}
+	}
+}
