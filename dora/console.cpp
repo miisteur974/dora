@@ -124,7 +124,7 @@ bool console::command(std::string input)
 	else
 	{
 
-		std::cout << " La commmande \"" << "\" n'existe pas ! " << std::endl;
+		std::cout << " La commmande \"" << args[0] << "\" n'existe pas ! " << std::endl;
 		return false;
 	}
 	return true;
