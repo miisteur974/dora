@@ -56,11 +56,10 @@ bool console::command(std::string input)
 			}	
 			else
 				this->touch(args[i]);
+		} else
+		{
+			std::cout << " SYNTAXE DE LA COMMANDE INCORRECTE ! " << std::endl;
 		}
-	}
-	else if (args[0] == "pwd")
-	{
-		int result = this->pwd();
 	}
 	else if (args[0] == "pwd")
 	{
@@ -77,6 +76,10 @@ bool console::command(std::string input)
 			}
 			return this->rm(args[i]);
 		}
+		else
+		{
+			std::cout << " SYNTAXE DE LA COMMANDE INCORRECTE ! " << std::endl;
+		}
 	}
 	else if (args[0] == "rmdir")
 	{
@@ -88,6 +91,10 @@ bool console::command(std::string input)
 				i++;
 			}
 			return this->rmdir(args[i]);
+		}
+		else
+		{
+			std::cout << " SYNTAXE DE LA COMMANDE INCORRECTE ! " << std::endl;
 		}
 	}
 	else if (args[0] == "cd")
@@ -101,15 +108,58 @@ bool console::command(std::string input)
 			}
 			return this->cd(args[i]);
 		}
+		else
+		{
+			std::cout << " SYNTAXE DE LA COMMANDE INCORRECTE ! " << std::endl;
+		}
+	}
+	else if (args[0] == "JSON")
+	{
+		if (args.size()>1)
+		{
+			unsigned int i = 1;
+			while (args[i].empty())
+			{
+				i++;
+			}
+			return this->export_json(args[i]);
+		}
+		else
+		{
+			std::cout << " SYNTAXE DE LA COMMANDE INCORRECTE ! " << std::endl;
+		}
 	}
 	else if (args[0] == "export")
 	{
-		std::string generated = this->list_file(this->m_root, 1) + "\r\n";
-		std::fstream output;
-		output.open("file.json", std::ios::out | std::ios::binary);
-		std::cout << generated;
-		output << "{\r\n" + generated + "}\r\n";
-		output.close();
+		if (args.size()>1)
+		{
+			unsigned int i = 1;
+			while (args[i].empty())
+			{
+				i++;
+			}
+			return this->export_file(args[i]);
+		}
+		else
+		{
+			std::cout << " SYNTAXE DE LA COMMANDE INCORRECTE ! " << std::endl;
+		}
+	}
+	else if (args[0] == "import")
+	{
+		if (args.size()>1)
+		{
+			unsigned int i = 1;
+			while (args[i].empty())
+			{
+				i++;
+			}
+			return this->import_file(args[i]);
+		}
+		else
+		{
+			std::cout << " SYNTAXE DE LA COMMANDE INCORRECTE ! " << std::endl;
+		}
 	}
 	else if (args[0] == "quit")
 	{
@@ -119,12 +169,23 @@ bool console::command(std::string input)
 	{
 		this->clear();
 	}
+	else if (args[0] == "help")
+	{
+		std::fstream help;
+		help.open("HELP.txt");
+		std::string line;
+		while (getline(help,line))
+		{
+			std::cout << " " << line << std::endl;
+		}
+		help.close();
+	}
 	else if (args[0].empty())
-	{}
+	{ }
 	else
 	{
-
 		std::cout << " La commmande \"" << args[0] << "\" n'existe pas ! " << std::endl;
+		std::cout << " Utilisez la commande \"help\" pour affichez toute les commandes! " << std::endl;
 		return false;
 	}
 	return true;
@@ -289,7 +350,12 @@ bool console::cd(const std::string& path)
 				{
 					return true;
 				}
-				
+			}
+			else if (this->m_cur->find(tmp[0]))
+			{
+				const std::string prefix = "./";
+				this->cd( prefix + path);
+				return true;
 			}
 			std::cout << " \"" << path << "\" n'existe pas ! " << std::endl;
 			return false;
@@ -317,6 +383,50 @@ bool console::quit()
 void console::clear()
 {
 	system("cls");
+}
+
+bool console::export_json(std::string fName) const
+{
+	std::string generated = this->JSON(this->m_root, 1) + "\r\n";
+	std::fstream output;
+	output.open(fName+".json", std::ios::out | std::ios::binary);
+	if (!output.is_open())
+		return false;
+	std::cout << generated;
+	output << "{\r\n" + generated + "}\r\n";
+	output.close();
+	return true;
+}
+
+bool console::export_file(std::string file_name) const
+{
+	std::string generated = this->list_file(this->m_root, 0);
+	std::fstream output;
+	output.open(file_name+".cmd", std::ios::out | std::ios::binary);
+	std::cout << generated;
+	output << generated + "\r\n";
+	output.close();
+	return true;
+}
+
+bool console::import_file(std::string file)
+{
+	delete this->m_root;
+	std::fstream container;
+	container.open(file + ".cmd");
+	std::string line;
+	getline(container, line);
+	
+	this->m_root = new directory(line);
+	this->m_cur = this->m_root;
+	this->PATH = this->m_cur->get_name() + "/";
+
+	while (getline(container, line))
+	{
+		this->command(line);
+	}
+	
+	return true;
 }
 
 directory* console::get_root()
@@ -354,31 +464,59 @@ bool console::start()
 	return true;
 }
 
-std::string console::list_file(file* fichier, int state)
+std::string console::list_file(file* fichier, int state) const
 {
-	std::string liste,tab,type;
+	std::string liste,type = "f";
+	const std::string newline = "\r\n";
+
+	if (dynamic_cast<directory*>(fichier))
+	{
+		if (state > 0)
+		{
+			liste += "mkdir " + fichier->get_name() + newline;
+			liste += "cd " + fichier->get_name() + newline;
+		}
+		else
+			liste += fichier->get_name()+newline;
+		
+		directory* tmp = dynamic_cast<directory*>(fichier);
+		for (unsigned int i = 0; i<tmp->get_content().size(); i++)
+		{
+			liste += list_file(tmp->get_content()[i], state + 1);
+		}
+		if (state > 0)
+			liste += "cd .." + newline;
+	}
+	else
+		liste += "touch " + fichier->get_fullname() + " " + std::to_string(fichier->get_size()) + newline;
+	return liste;
+}
+
+std::string console::JSON(file* fichier, int state) const
+{
+	std::string liste, tab, type;
 	const std::string newline = "\r\n";
 	for (int i = 0; i < state; i++)
 		tab += "\t";
 	const std::string tabm = tab;
-	liste += tab +"\""+ fichier->get_name() + "\"" + " : {" + newline;
+	liste += tab + "\"" + fichier->get_name() + "\"" + " : {" + newline;
 	tab += "\t";
 	if (dynamic_cast<directory*>(fichier))
 		type = "directory";
 	else
 		type = "file";
 	liste += tab + "\"" + "-type" + "\"" + ":" + "\"" + type + "\"" + "," + newline;
-	liste += tab + "\""+ "-ext" + "\"" + ":" + "\"" + fichier->get_ext() + "\"" + "," + newline;
+	liste += tab + "\"" + "-ext" + "\"" + ":" + "\"" + fichier->get_ext() + "\"" + "," + newline;
 
 	if (type == "directory")
 	{
-		liste += tab + "\"" + "-size" + "\"" + ":" +"\"" + std::to_string(fichier->get_size()) + "\"" + "," + newline;
+		liste += tab + "\"" + "-size" + "\"" + ":" + "\"" + std::to_string(fichier->get_size()) + "\"" + "," + newline;
 		directory* tmp = dynamic_cast<directory*>(fichier);
 		liste += tab + "\"" + "content" + "\"" + ": {" + newline;
 		for (unsigned int i = 0; i<tmp->get_content().size(); i++)
 		{
-			liste += list_file(tmp->get_content()[i], state+2);
-			if (i < tmp->get_content().size()-1)
+			liste += list_file(tmp->get_content()[i], state + 2);
+			if (i < tmp->get_content().size() - 1)
 				liste += ",";
 			liste += newline;
 		}
@@ -389,3 +527,4 @@ std::string console::list_file(file* fichier, int state)
 	liste += tabm + "}";
 	return liste;
 }
+

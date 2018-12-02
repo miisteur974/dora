@@ -1,0 +1,46 @@
+
+------------------------------    HELP    ---------------------------------------
+
+ls                        
+            - Liste tous les fichiers et dossiers du répertoire courant
+
+mkdir <nom_du_dossier>
+            - Cree un dossier dans le repertoire courant
+
+touch <nom_du_fichier> <taille>
+            - Cree un fichier dans le repertoire courant, si aucune taille n'est 
+              definie celle-ci sera nulle par defaut
+
+pwd
+            - Affiche le chemin absolu du repertoire courant
+
+rm  <nom_du_fichier>
+            - Supprime un fichier
+
+rmdir <nom_du_dossier>
+            - Supprime un dossier. ATTENTION CETTE COMMANDE SUPPRIME EGALEMENT LE
+              CONTENU DU DOSSIER DE MANIERE RECURSIVE.
+
+cd <chemin>
+            - Permet de se deplacer dans l'arborescence. "." correspond au doss-
+              -ier courant, ".." correspond au dossier precedent. La commande cd
+              prend en parametre un chemin relatif ou absolu.
+ 
+quit
+            - Permet de quitter la console
+
+clear
+            - Permet d'effacer l'ecran
+
+export <nom_du_fichier>
+            - Permet d'enregistrer l'ensemble des dossiers et fichiers dans un fichier cmd
+              Il n'est pas necessaire de preciser l'extension du fichier.
+
+JSON <nom_du_fichier>
+            - Permet d'enregistrer l'ensemble des dossiers et fichiers dans un fichier JSON
+              Il n'est pas necessaire de preciser l'extension du fichier. Cette fonction 
+              permet une meilleur visualisation du contenu.
+
+import <nom_du_fichier>
+            - Permet de creer une arborescence a partir d'un fichier cmd pre-configurer.
+

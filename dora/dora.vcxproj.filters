@@ -50,13 +50,21 @@
     <ClInclude Include="utils.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="file.conf">
-      <Filter>Fichiers de ressources</Filter>
-    </None>
     <None Include="file.json">
       <Filter>Fichiers de ressources</Filter>
     </None>
+    <None Include="test.cmd">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="HELP.txt">
+      <Filter>Fichiers de ressources</Filter>
+    </Text>
   </ItemGroup>
 </Project>

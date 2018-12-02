@@ -4,11 +4,24 @@
 		"-ext":"",
 		"-size":"0",
 		"content": {
-			"bonjourrrr" : {
+			"test" : {
 				"-type":"directory",
 				"-ext":"",
 				"-size":"0",
 				"content": {
+					"lol" : {
+						"-type":"directory",
+						"-ext":"",
+						"-size":"0",
+						"content": {
+							"test" : {
+                "-type": "file",
+								"-data":"",
+								"-ext":"",
+								"-size":"0"
+							}
+						}
+					}
 				}
 			}
 		}

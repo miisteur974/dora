@@ -5,7 +5,8 @@
 
 int main(int argc, char* argv[])
 {
-	directory* root = new directory("G:");
+
+	directory* root = new directory("Disk0");
 	system("cls");
 	console t(root);
 	t.start();

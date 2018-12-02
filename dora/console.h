@@ -23,9 +23,11 @@ protected:
 	bool		cd(const std::string& path);
 	bool		quit();
 	void		clear();
-	std::string	list_file(file* fichier, int state);
-	//bool		export_container(std::string name);
-	//bool		import_container(std::string name);
+	bool		export_file(std::string file_name) const;
+	bool		export_json(std::string fName) const;
+	bool		import_file(std::string file);
+	std::string	list_file(file* fichier, int state) const;
+	std::string JSON(file* fichier, int state) const;
 
 public:
 	console();
